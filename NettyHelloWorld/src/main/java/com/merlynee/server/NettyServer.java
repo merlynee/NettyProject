@@ -6,6 +6,7 @@ import io.netty.channel.ChannelInitializer;
 import io.netty.channel.EventLoopGroup;
 import io.netty.channel.nio.NioEventLoopGroup;
 import io.netty.channel.sctp.nio.NioSctpServerChannel;
+import io.netty.channel.socket.nio.NioServerSocketChannel;
 import io.netty.channel.socket.nio.NioSocketChannel;
 
 import java.net.InetSocketAddress;
@@ -17,14 +18,19 @@ import java.net.InetSocketAddress;
  */
 public class NettyServer {
 
-    public void start() throws Exception {
+    public static void main(String[] args) throws Exception {
+        NettyServer server = new NettyServer();
+        server.start(9000);
+    }
+
+    public void start(Integer port) throws Exception {
         final EchoServerHandler serverHandler = new EchoServerHandler();
         EventLoopGroup group = new NioEventLoopGroup();
         try {
             ServerBootstrap bootstrap = new ServerBootstrap();
             bootstrap.group(group)
-                    .channel(NioSctpServerChannel.class)
-                    .localAddress(new InetSocketAddress(1))
+                    .channel(NioServerSocketChannel.class)
+                    .localAddress(new InetSocketAddress(port))
                     .childHandler(new ChannelInitializer<NioSocketChannel>() {
                         @Override
                         protected void initChannel(NioSocketChannel ch) throws Exception {
